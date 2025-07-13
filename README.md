@@ -1,6 +1,8 @@
 # SpriteCutter - Image Grid Slicer
 
-A Python GUI application for slicing images into grids. Perfect for creating sprite sheets, cutting up tiled images, or extracting individual tiles from larger images.
+A simple, straight forward python GUI application for slicing images into grids. Perfect for creating sprite sheets, cutting up tiled images, or extracting individual tiles from larger images.
+
+Not very fancy, but does exactly what it say's on the tin.  Hopefully it does one simple job well.
 
 ## Features
 
