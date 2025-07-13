@@ -38,6 +38,10 @@ class SpriteCutter:
         self.maintain_aspect = tk.BooleanVar(value=False)
         self.aspect_ratio = tk.DoubleVar(value=1.0)
         
+        # File naming
+        self.filename_prefix = tk.StringVar(value="sprite")
+        self.naming_scheme = tk.StringVar(value="row_col")  # "row_col" or "sequential"
+        
         self.setup_ui()
         
     def setup_ui(self):
@@ -64,6 +68,28 @@ class SpriteCutter:
         file_frame.pack(fill=tk.X, pady=(0, 10))
         
         ttk.Button(file_frame, text="Load Image", command=self.load_image).pack(fill=tk.X, pady=2)
+        
+        # Filename prefix
+        prefix_frame = ttk.Frame(file_frame)
+        prefix_frame.pack(fill=tk.X, pady=2)
+        ttk.Label(prefix_frame, text="Filename Prefix:").pack(side=tk.LEFT)
+        prefix_entry = ttk.Entry(prefix_frame, textvariable=self.filename_prefix, width=15)
+        prefix_entry.pack(side=tk.RIGHT, fill=tk.X, expand=True, padx=(5, 0))
+        
+        # Helper text for prefix
+        prefix_help = ttk.Label(file_frame, text="(Custom name for saved files)", 
+                               font=('TkDefaultFont', 8), foreground='gray')
+        prefix_help.pack(fill=tk.X, pady=(0, 5))
+        
+        # Naming scheme options
+        naming_frame = ttk.LabelFrame(file_frame, text="File Naming", padding=5)
+        naming_frame.pack(fill=tk.X, pady=(0, 5))
+        
+        ttk.Radiobutton(naming_frame, text="Row & Column (prefix_r00_c00.png)", 
+                       variable=self.naming_scheme, value="row_col").pack(anchor=tk.W)
+        ttk.Radiobutton(naming_frame, text="Sequential Number (prefix_001.png)", 
+                       variable=self.naming_scheme, value="sequential").pack(anchor=tk.W)
+        
         ttk.Button(file_frame, text="Save Sliced Images", command=self.save_sliced_images).pack(fill=tk.X, pady=2)
         
         # Grid settings
@@ -123,6 +149,7 @@ class SpriteCutter:
 • Adjust rows/columns as needed
 • Set cell dimensions manually
 • Use aspect ratio for proportional cells
+• Customize filename prefix for output
 • Save to slice the image
         """
         ttk.Label(instructions_frame, text=instructions.strip(), justify=tk.LEFT, wraplength=200).pack()
@@ -165,6 +192,11 @@ class SpriteCutter:
         if file_path:
             try:
                 self.image = Image.open(file_path)
+                # Only update filename prefix if it's empty or still has the default value
+                current_prefix = self.filename_prefix.get().strip()
+                if not current_prefix or current_prefix == "sprite":
+                    base_name = os.path.splitext(os.path.basename(file_path))[0]
+                    self.filename_prefix.set(base_name)
                 self.display_image_on_canvas()
                 self.update_info()
                 messagebox.showinfo("Success", "Image loaded successfully!")
@@ -469,7 +501,10 @@ Total sprites: {self.rows.get() * self.cols.get()}"""
             return
             
         # Choose output directory
-        output_dir = filedialog.askdirectory(title="Select Output Directory")
+        output_dir = filedialog.askdirectory(
+            title="Select Directory to Save Sliced Images",
+            initialdir=os.path.expanduser("~")  # Start from user's home directory
+        )
         if not output_dir:
             return
             
@@ -485,13 +520,15 @@ Total sprites: {self.rows.get() * self.cols.get()}"""
             cell_w = actual_w // self.cols.get()
             cell_h = actual_h // self.rows.get()
             
-            # Create subdirectory for this slicing session
-            base_name = os.path.splitext(os.path.basename(getattr(self.image, 'filename', 'image')))[0]
-            session_dir = os.path.join(output_dir, f"{base_name}_sliced")
-            os.makedirs(session_dir, exist_ok=True)
+            # Get the filename prefix
+            prefix = self.filename_prefix.get().strip()
+            if not prefix:
+                prefix = "sprite"  # Default fallback
             
-            # Slice and save images
+            # Slice and save images directly to the selected directory
             saved_count = 0
+            image_index = 1  # For sequential numbering
+            
             for row in range(self.rows.get()):
                 for col in range(self.cols.get()):
                     # Calculate crop box
@@ -507,13 +544,32 @@ Total sprites: {self.rows.get() * self.cols.get()}"""
                     if left < self.image.width and top < self.image.height:
                         # Crop and save
                         cropped = self.image.crop((left, top, right, bottom))
-                        filename = f"{base_name}_r{row:02d}_c{col:02d}.png"
-                        filepath = os.path.join(session_dir, filename)
+                        
+                        # Generate filename based on selected naming scheme
+                        if self.naming_scheme.get() == "sequential":
+                            # Sequential numbering: prefix_001.png, prefix_002.png, etc.
+                            total_images = self.rows.get() * self.cols.get()
+                            digits = len(str(total_images))  # Calculate needed digits
+                            filename = f"{prefix}_{image_index:0{digits}d}.png"
+                            image_index += 1
+                        else:
+                            # Row and column: prefix_r00_c00.png (default)
+                            filename = f"{prefix}_r{row:02d}_c{col:02d}.png"
+                            
+                        filepath = os.path.join(output_dir, filename)
                         cropped.save(filepath, "PNG")
                         saved_count += 1
                         
+            # Show success message with appropriate example
+            if self.naming_scheme.get() == "sequential":
+                total_images = self.rows.get() * self.cols.get()
+                digits = len(str(total_images))
+                example = f"{prefix}_{'1'.zfill(digits)}.png, {prefix}_{'2'.zfill(digits)}.png, etc."
+            else:
+                example = f"{prefix}_r00_c00.png, {prefix}_r00_c01.png, etc."
+                
             messagebox.showinfo("Success", 
-                              f"Saved {saved_count} images to:\n{session_dir}")
+                              f"Saved {saved_count} images to:\n{output_dir}\n\nFiles named: {example}")
                               
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save images: {str(e)}")
