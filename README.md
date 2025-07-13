@@ -1,90 +1,120 @@
 # SpriteCutter - Image Grid Slicer
 
-A simple, straight forward python GUI application for slicing images into grids. Perfect for creating sprite sheets, cutting up tiled images, or extracting individual tiles from larger images.
+A Python GUI application for slicing images into grids with precise control and flexible naming options. Perfect for creating sprite sheets, cutting up tiled images, or extracting individual tiles from larger images.
 
-Not very fancy, but does exactly what it say's on the tin.  Hopefully it does one simple job well.
+Simple, intuitive, and does exactly what it says on the tin - hopefully it does one job well.
 
-## Features
+## 🚀 Quick Start
 
-- **Interactive Grid Overlay**: Drag and resize a visual grid over your image
-- **Flexible Grid Control**: 
-  - Adjust number of rows and columns
-  - Set custom cell dimensions (width/height)
-  - Maintain aspect ratio for proportional cells
-  - Real-time visual feedback
-- **Intuitive Controls**:
-  - Drag the grid to reposition
-  - Drag corners and edges to resize
-  - Visual resize handles for precise control
-- **Batch Image Export**: Save all grid cells as individual PNG files
-- **Smart Naming**: Automatically names files with row/column coordinates
-
-## Installation
-
-1. Make sure you have Python 3.7+ installed
-2. Install dependencies:
+### Installation
+1. **Python 3.7+ Required** (3.8+ recommended)
+2. **Clone or Download** this repository
+3. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-## Usage
+### Running the Application
+```bash
+python spritecutter.py
+```
 
-1. Run the application:
-   ```bash
-   python spritecutter.py
-   ```
+## 📖 Usage Guide
 
-2. **Load an Image**: Click "Load Image" and select your source image
+### **1. Load Your Image**
+- Click **"Load Image"** and select your source image
+- Supports: PNG, JPG, JPEG, GIF, BMP, TIFF
+- The filename automatically becomes your default prefix
 
-3. **Position the Grid**: 
-   - Drag the red grid overlay to position it over the area you want to slice
-   - The grid will show a visual preview of how your image will be cut
+### **2. Configure Your Grid**
+- **Rows & Columns**: Use spinboxes to set grid dimensions
+- **Cell Dimensions**: Specify exact pixel sizes for precision work
+- **Aspect Ratio**: Enable to maintain proportional cells during resize
 
-4. **Adjust Grid Settings**:
-   - **Rows/Columns**: Change the number of grid divisions
-   - **Cell Dimensions**: Set exact pixel dimensions for each cell
-   - **Aspect Ratio**: Enable to maintain proportional cells when resizing
+### **3. Position the Grid**
+- **Move**: Drag inside the red grid area
+- **Resize**: Drag corner handles for proportional resize
+- **Resize Edges**: Drag edge handles for single-direction resize
+- **Fine-tune**: Use dimension controls for pixel-perfect positioning
 
-5. **Resize the Grid**:
-   - Drag the corner handles to resize the entire grid
-   - Drag edge handles to resize in one direction
-   - Hold the grid interior to move without resizing
+### **4. Customize Output**
+- **Filename Prefix**: Edit the text field to customize your output names
+- **Naming Scheme**: Choose between:
+  - **Row & Column**: `sprite_r00_c00.png` (position-based)
+  - **Sequential**: `sprite_001.png` (index-based)
 
-6. **Save Sliced Images**:
-   - Click "Save Sliced Images" 
-   - Choose an output directory
-   - Images are saved as PNG files with descriptive names (e.g., `image_r00_c00.png`)
+### **5. Save Your Sprites**
+- Click **"Save Sliced Images"**
+- Choose your output directory (starts from home folder)
+- Files are saved directly to your chosen location
 
-## Controls
+## 💾 Output Options
 
-| Action | Method |
-|--------|--------|
-| Move Grid | Drag inside the grid area |
-| Resize Grid | Drag the corner/edge handles |
-| Change Grid Size | Adjust rows/columns spinboxes |
-| Set Cell Size | Adjust width/height spinboxes |
-| Maintain Proportions | Check "Maintain Aspect Ratio" |
+### **Naming Schemes**
+```
+Row & Column Format:
+├── sprite_r00_c00.png  (top-left)
+├── sprite_r00_c01.png  (top-center)
+├── sprite_r00_c02.png  (top-right)
+├── sprite_r01_c00.png  (middle-left)
+└── ...
 
-## Output Format
+Sequential Format:
+├── sprite_001.png
+├── sprite_002.png
+├── sprite_003.png
+└── ...
+```
 
-- Images are saved as PNG files for best quality
-- Naming convention: `{original_name}_r{row}_c{column}.png`
-- Files are organized in a subfolder named `{original_name}_sliced`
+### **File Details**
+- **Format**: PNG (lossless compression)
 
-## Example Use Cases
+### **Dependencies**
+```bash
+# Core dependencies
+Pillow>=10.0.0          # Image processing
+tkinter-dnd2>=0.3.0     # Enhanced drag & drop (optional)
 
-- **Sprite Sheets**: Cut game sprites from a larger sheet
-- **Tile Maps**: Extract individual tiles from tiled backgrounds
-- **Icon Sets**: Separate icons from a grid layout
-- **Image Processing**: Batch process sections of large images
+# tkinter is included with most Python installations
+```
 
-## Requirements
+### **Installation Methods**
+```bash
+# Method 1: pip install
+pip install -r requirements.txt
 
-- Python 3.7+
-- Pillow (PIL) for image processing
-- tkinter (usually included with Python)
-- tkinter-dnd2 for enhanced drag & drop support
+# Method 2: Individual packages
+pip install Pillow tkinter-dnd2
 
-## License
+# Method 3: Using virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-This project is open source. Feel free to modify and distribute as needed.
+## 🤝 Contributing
+
+This project aims to be simple and focused. Contributions are welcome for:
+
+- **Bug fixes** and stability improvements
+- **UI/UX enhancements** for better usability  
+- **Performance optimizations** for large images
+- **Additional file format support**
+- **Documentation improvements**
+
+Please keep the core philosophy: *"Do one thing well."*
+
+## 📄 License
+
+This project is open source and available under the MIT License. Feel free to modify, distribute, and use in your projects.
+
+## 🙏 Acknowledgments
+
+Built with:
+- **Python & tkinter**
+- **Pillow (PIL)**
+- **Love for simple, effective tools** 🛠️
+
+---
+
+**SpriteCutter** - Because sometimes you just need to slice an image into a grid, and it should be simple.
